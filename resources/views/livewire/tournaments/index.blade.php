@@ -13,7 +13,11 @@
     <div class="py-12">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6">
-                Show active tournaments, with upcoming matches?
+                @foreach ($tournaments as $tournament)
+                    <div class="mt-2 text-cyan-900">
+                        <a href="{{ route('tournaments.show', $tournament) }}">{{ $tournament->name }}</a>
+                    </div>                    
+                @endforeach
             </div>
         </div>
     </div>

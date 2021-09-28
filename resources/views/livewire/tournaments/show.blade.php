@@ -7,24 +7,24 @@
 
     <div class="py-12">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 ">
+            <div class="p-6 space-y-6">
                 @foreach ($tournament->games->groupBy('round') as $round)
-                <div class="mt-4">
-                    <span class="font-bold">Round {{ $loop->iteration }}</span>
-                    @foreach ($round as $game)
-                        <div class="mt-2">
-                            {{ $game->player1->name }}
-                            <span class="text-sm text-cyan-800">vs</span>
-                            {{ $game->player2->name }}
-                        </div>
-                    @endforeach
-                </div>
+                    <div class="">
+                        <span class="font-bold">Round {{ $loop->iteration }}</span>
+                        @foreach ($round as $game)
+                            <div class="mt-2">
+                                {{ $game->player1->name }}
+                                <span class="text-sm text-cyan-800">vs</span>
+                                {{ $game->player2->name }}
+                            </div>
+                        @endforeach
+                    </div>
                 @endforeach
             </div>
         </div>
         <div class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6">
-                Show matches
+                Show leaderboard
             </div>
         </div>
     </div>
