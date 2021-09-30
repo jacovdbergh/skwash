@@ -1,7 +1,7 @@
 <div>
     <x-slot name="header">
         <div class="flex justify-between">
-            <h2 class="font-semibold text-xl text-cyan-900 leading-tight">
+            <h2 class="text-xl font-semibold leading-tight text-cyan-900">
                 Tournaments
             </h2>
             <div>
@@ -10,15 +10,14 @@
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6">
-                @foreach ($tournaments as $tournament)
-                    <div class="mt-2 text-cyan-900">
-                        <a href="{{ route('tournaments.show', $tournament) }}">{{ $tournament->name }}</a>
-                    </div>                    
-                @endforeach
+    <div class="py-12 space-y-4">
+        @foreach ($tournaments as $tournament)
+        <a class="block p-4 overflow-hidden bg-white shadow-sm sm:rounded-lg" href="{{ route('tournaments.show', $tournament) }}">
+            <div class="flex justify-between text-cyan-900">
+                <span>{{ $tournament->name }}</span>
+                <span>&rarr;</span>
             </div>
-        </div>
+        </a>
+        @endforeach
     </div>
 </div>
