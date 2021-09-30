@@ -15,10 +15,8 @@ class CreateGamesTable extends Migration
     {
         Schema::create('games', function (Blueprint $table) {
             $table->id();
-            $table->unsignedSmallInteger('round');
-            $table->foreignId('tournament_id')->constrained();
-            $table->foreignId('player_1_id')->constrained('players');
-            $table->foreignId('player_2_id')->constrained('players');
+            $table->foreignId('squash_match_id')->constrained();
+            $table->integer('game')->constrained();
             $table->integer('player_1_score')->nullable();
             $table->integer('player_2_score')->nullable();
             $table->timestamps();
@@ -32,6 +30,6 @@ class CreateGamesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('matches');
+        Schema::dropIfExists('games');
     }
 }

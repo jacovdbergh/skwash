@@ -16,8 +16,8 @@ class Tournament extends Model
         return $this->hasMany(Player::class);
     }
 
-    public function games()
+    public function matches()
     {
-        return $this->hasMany(Game::class);
+        return $this->hasMany(SquashMatch::class);
     }
 }

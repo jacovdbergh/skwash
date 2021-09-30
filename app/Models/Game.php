@@ -11,13 +11,8 @@ class Game extends Model
 
     protected $guarded = [];
 
-    public function player1()
+    public function squashMatch()
     {
-        return $this->hasOne(Player::class, 'id', 'player_1_id');
-    }
-
-    public function player2()
-    {
-        return $this->hasOne(Player::class, 'id', 'player_2_id');
+        return $this->belongsTo(SquashMatch::class);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Tournaments;
 
 use App\Models\Game;
 use App\Models\Player;
+use App\Models\SquashMatch;
 use App\Models\Tournament;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
@@ -86,7 +87,7 @@ class Edit extends Component
 
             for ($i = 0; $i < $firstHalf->count(); $i++) {
                 if ($firstHalf[$i] and $secondHalf[$i]) {
-                    Game::create([
+                    SquashMatch::create([
                         'tournament_id' => $this->tournament->id,
                         'round' => $round,
                         'player_1_id' => $firstHalf[$i]->id,

@@ -16,41 +16,40 @@ class Player extends Model
         return $this->belongsTo(Tournament::class);
     }
 
-    public function player1Games()
+    public function player1Matches()
     {
-        return $this->hasMany(Game::class, 'player_1_id', 'id');
+        return $this->hasMany(SquashMatch::class, 'player_1_id', 'id');
     }
 
-    public function player2Games()
+    public function player2Matches()
     {
-        return $this->hasMany(Game::class, 'player_2_id', 'id');
+        return $this->hasMany(SquashMatch::class, 'player_2_id', 'id');
     }
 
-    public function player1GamesPlayed()
+    public function player1MatchesPlayed()
     {
-        return $this->player1Games()->whereNotNull('player_1_score');
+        return $this->player1Matches()->whereNotNull('winning_player');
     }
 
-    public function player2GamesPlayed()
+    public function player2MatchesPlayed()
     {
-        return $this->player2Games()->whereNotNull('player_1_score');
+        return $this->player2Matches()->whereNotNull('winning_player');
     }
 
-    public function player1GamesWon()
+    public function player1MatchesWon()
     {
-        return $this->player1GamesPlayed()->whereColumn('player_1_score', '>', 'player_2_score');
+        return $this->player1MatchesPlayed()->where('winning_player', 1);
     }
 
-    public function player2GamesWon()
+    public function player2MatchesWon()
     {
-        return $this->player2GamesPlayed()->whereColumn('player_2_score', '>', 'player_1_score');
+        return $this->player2MatchesPlayed()->where('winning_player', 2);
     }
 
     public function pointDiff()
     {
-        $this->loadMissing('player1Games', 'player2Games');
+        $this->loadMissing('player1MatchesPlayed', 'player2MatchesPlayed');
 
-        return $this->player1Games->sum('player_1_score') - $this->player1Games->sum('player_2_score')
-            + $this->player2Games->sum('player_2_score') - $this->player2Games->sum('player_1_score');
+        return $this->player1MatchesPlayed->sum('player_1_pd') + $this->player2MatchesPlayed->sum('player_2_pd');
     }
 }
