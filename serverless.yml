@@ -14,7 +14,7 @@ provider:
         APP_KEY: ${ssm:/skwash/app-key}
         APP_ENV: production
         APP_URL: https://skwash.bergh.tech
-        APP_DEBUG: false
+        APP_DEBUG: true
         XDG_CONFIG_HOME: /tmp
         DB_CONNECTION: mysql
         DB_PORT: 3306
