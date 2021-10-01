@@ -26,6 +26,8 @@ class EnterMatchScores extends ModalComponent
                 'player_2_score' => (string) ($this->match->games?->get($i)?->player_2_score ?? 0),
             ]);
         }
+
+        $this->updatedGames();
     }
 
     public function updatedGames()
