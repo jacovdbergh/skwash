@@ -13,7 +13,7 @@ class Show extends Component
 
     public function render()
     {
-        return view('livewire.tournaments.show')->layout('layouts.app');
+        return view('livewire.tournaments.show')->layout(auth()->check() ? 'layouts.app' : 'layouts.guest');
     }
 
     public function matchUpdated()

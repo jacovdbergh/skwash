@@ -82,8 +82,13 @@
                         <div class="w-full font-bold border-b border-gray-300">Round {{ $loop->iteration }}</div>
                         @foreach ($round as $match)
                             <div
-                                class="flex items-center w-full mt-4 cursor-pointer"
-                                wire:click="$emit('openModal', 'tournaments.enter-match-scores', {{ json_encode([$match->id]) }})"
+                                @class([
+                                    'flex items-center w-full mt-4',
+                                    'cursor-pointer' => auth()->check(),
+                                ])
+                                @auth
+                                    wire:click="$emit('openModal', 'tournaments.enter-match-scores', {{ json_encode([$match->id]) }})"
+                                @endauth
                             >
                                 <div class="flex flex-col items-center justify-center flex-1">
                                     {{ $match->player1->name }}
@@ -96,9 +101,11 @@
                                     <span
                                         class="block text-cyan-700">{{ $match->games->isNotEmpty() ? $match->games->filter(fn($game) => $game->player_2_score > $game->player_1_score)->count() : '-' }}</span>
                                 </div>
-                                <div>
-                                    &rarr;
-                                </div>
+                                @auth
+                                    <div>
+                                        &rarr;
+                                    </div>
+                                @endauth
                             </div>
                         @endforeach
                     </div>
