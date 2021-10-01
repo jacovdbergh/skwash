@@ -79,7 +79,7 @@
                 @foreach ($tournament->matches()->with('games', 'player1', 'player2')->get()->groupBy('round')
     as $round)
                     <div class="w-full">
-                        <div class="w-full font-bold border-b border-gray-300">Round {{ $loop->iteration }}</div>
+                        <div class="w-full font-bold border-b border-gray-300 text-cyan-900">Round {{ $loop->iteration }}</div>
                         @foreach ($round as $match)
                             <div
                                 @class([
