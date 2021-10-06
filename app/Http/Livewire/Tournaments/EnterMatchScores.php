@@ -5,7 +5,6 @@ namespace App\Http\Livewire\Tournaments;
 use App\Models\Game;
 use App\Models\SquashMatch;
 use Illuminate\Support\Collection;
-use Livewire\Component;
 use LivewireUI\Modal\ModalComponent;
 
 class EnterMatchScores extends ModalComponent
@@ -32,15 +31,15 @@ class EnterMatchScores extends ModalComponent
 
     public function updatedGames()
     {
-        if ($this->games[0]['player_1_score'] > 10 and $this->games[0]['player_1_score'] > $this->games[0]['player_2_score']
-        and $this->games[1]['player_1_score'] > 10 and $this->games[1]['player_1_score'] > $this->games[1]['player_2_score']) {
+        if ($this->games[0]['player_1_score'] > 8 and $this->games[0]['player_1_score'] > $this->games[0]['player_2_score']
+        and $this->games[1]['player_1_score'] > 8 and $this->games[1]['player_1_score'] > $this->games[1]['player_2_score']) {
             $this->wonInTwo = true;
             $this->games[2] = [
                 'player_1_score' => (string) 0,
                 'player_2_score' => (string) 0,
             ];
-        } elseif ($this->games[0]['player_2_score'] > 10 and $this->games[0]['player_1_score'] < $this->games[0]['player_2_score']
-        and $this->games[1]['player_2_score'] > 10 and $this->games[1]['player_1_score'] < $this->games[1]['player_2_score']) {
+        } elseif ($this->games[0]['player_2_score'] > 8 and $this->games[0]['player_1_score'] < $this->games[0]['player_2_score']
+        and $this->games[1]['player_2_score'] > 8 and $this->games[1]['player_1_score'] < $this->games[1]['player_2_score']) {
             $this->wonInTwo = true;
             $this->games[2] = [
                 'player_1_score' => (string) 0,
@@ -56,15 +55,15 @@ class EnterMatchScores extends ModalComponent
         foreach ($this->games as $i => $game) {
             if (!$this->wonInTwo or $i < 2) {
                 $i++;
-                if ($game['player_1_score'] < 11 and $game['player_2_score'] < 11) {
-                    $this->addError('scores', "One player must score at least 11 points in game {$i}.");
+                if ($game['player_1_score'] < 9 and $game['player_2_score'] < 9) {
+                    $this->addError('scores', "One player must score at least 9 points in game {$i}.");
 
                     return false;
                 }
 
-                if ($game['player_1_score'] >= 10 and $game['player_2_score'] >= 10
+                if ($game['player_1_score'] >= 8 and $game['player_2_score'] >= 8
                 and abs($game['player_1_score'] - $game['player_2_score']) != 2) {
-                    $this->addError('scores', "Margin must be two if scores are both above 10 in game {$i}.");
+                    $this->addError('scores', "Margin must be two if scores are both above 8 in game {$i}.");
 
                     return false;
                 }
