@@ -26,29 +26,29 @@ class EnterMatchScores extends ModalComponent
             ]);
         }
 
-        $this->updatedGames();
+        // $this->updatedGames();
     }
 
-    public function updatedGames()
-    {
-        if ($this->games[0]['player_1_score'] > 8 and $this->games[0]['player_1_score'] > $this->games[0]['player_2_score']
-        and $this->games[1]['player_1_score'] > 8 and $this->games[1]['player_1_score'] > $this->games[1]['player_2_score']) {
-            $this->wonInTwo = true;
-            $this->games[2] = [
-                'player_1_score' => (string) 0,
-                'player_2_score' => (string) 0,
-            ];
-        } elseif ($this->games[0]['player_2_score'] > 8 and $this->games[0]['player_1_score'] < $this->games[0]['player_2_score']
-        and $this->games[1]['player_2_score'] > 8 and $this->games[1]['player_1_score'] < $this->games[1]['player_2_score']) {
-            $this->wonInTwo = true;
-            $this->games[2] = [
-                'player_1_score' => (string) 0,
-                'player_2_score' => (string) 0,
-            ];
-        } else {
-            $this->wonInTwo = false;
-        }
-    }
+    // public function updatedGames()
+    // {
+    //     if ($this->games[0]['player_1_score'] > 8 and $this->games[0]['player_1_score'] > $this->games[0]['player_2_score']
+    //     and $this->games[1]['player_1_score'] > 8 and $this->games[1]['player_1_score'] > $this->games[1]['player_2_score']) {
+    //         $this->wonInTwo = true;
+    //         $this->games[2] = [
+    //             'player_1_score' => (string) 0,
+    //             'player_2_score' => (string) 0,
+    //         ];
+    //     } elseif ($this->games[0]['player_2_score'] > 8 and $this->games[0]['player_1_score'] < $this->games[0]['player_2_score']
+    //     and $this->games[1]['player_2_score'] > 8 and $this->games[1]['player_1_score'] < $this->games[1]['player_2_score']) {
+    //         $this->wonInTwo = true;
+    //         $this->games[2] = [
+    //             'player_1_score' => (string) 0,
+    //             'player_2_score' => (string) 0,
+    //         ];
+    //     } else {
+    //         $this->wonInTwo = false;
+    //     }
+    // }
 
     public function validateScores()
     {
