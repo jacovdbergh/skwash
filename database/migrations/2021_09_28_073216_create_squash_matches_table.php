@@ -16,9 +16,9 @@ class CreateSquashMatchesTable extends Migration
         Schema::create('squash_matches', function (Blueprint $table) {
             $table->id();
             $table->unsignedSmallInteger('round');
-            $table->foreignId('tournament_id')->constrained();
-            $table->foreignId('player_1_id')->constrained('players');
-            $table->foreignId('player_2_id')->constrained('players');
+            $table->unsignedInteger('tournament_id');
+            $table->unsignedInteger('player_1_id');
+            $table->unsignedInteger('player_2_id');
             $table->tinyInteger('winning_player')->nullable();
             $table->integer('player_1_pd')->nullable();
             $table->integer('player_2_pd')->nullable();
