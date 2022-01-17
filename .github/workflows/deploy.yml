@@ -8,9 +8,55 @@ on:
     paths-ignore:
       - '**.todo'
 
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  OIDC_ROLE: arn:aws:iam::779498940176:role/berghtech-OIDC-GHActions-role
+  DEPLOYMENT_REGION: af-south-1
+  DEPLOYMENT_STAGE: production
+  DEPLOYMENT_NAME: skwash
+  PHP_VERSION: '8.0'
+  PHP_EXTENSIONS: 'curl, dom, bcmath, mbstring, zip'
+
 jobs:
-  build-project-code:
-    name: Build project code
+
+  deploy-assets:
+    name: Deploy assets
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Obtain NPM Cache directory
+        id: npm-cache-dir
+        run: echo "::set-output name=dir::$(npm cache dir)"
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package.lock') }}
+          restore-keys: ${{ runner.os }}-npm-
+
+      - uses: bahmutov/npm-install@v1
+
+      - name: Laravel Mix
+        run: npm run prod
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          role-to-assume: ${{ env.OIDC_ROLE }}
+          role-session-name: ${{ env.DEPLOYMENT_NAME }}-assets-deployer
+          aws-region: ${{ env.DEPLOYMENT_REGION }}
+
+      - name: Upload assets to s3
+        run: aws s3 sync ./public s3://${{ env.DEPLOYMENT_NAME }}-prod-assets --delete --exclude 'index.php' --exclude '.htaccess' --exclude 'robots.txt' --exclude 'web.config'
+
+  deploy-serverless:
+    name: Deploy Serverless stack
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -18,113 +64,42 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.0'
-          extensions: curl, dom, bcmath, mbstring, zip
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
 
       - uses: ramsey/composer-install@v1
         with:
-          composer-options: "--prefer-dist --optimize-autoloader --ignore-platform-reqs"
+          composer-options: "--prefer-dist --no-dev --optimize-autoloader --ignore-platform-reqs"
 
-      - name: Prep for upload
-        run: |
-          touch project-code.tar
-          tar cf project-code.tar --exclude=project-code.tar --exclude=.git/ .
+      - name: Obtain NPM Cache directory
+        id: npm-cache-dir
+        run: echo "::set-output name=dir::$(npm cache dir)"
 
-      - name: Upload project code
-        uses: actions/upload-artifact@v2
+      - name: Cache NPM dependencies
+        uses: actions/cache@v2
         with:
-          name: project-code
-          path: project-code.tar
-          retention-days: 1
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package.lock') }}
+          restore-keys: ${{ runner.os }}-npm-
 
-  build-assets:
-    name: Build assets
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v2
-      
       - uses: bahmutov/npm-install@v1
-
-      - uses: ramsey/composer-install@v1
-        with:
-          composer-options: "--prefer-dist --optimize-autoloader --ignore-platform-reqs"
 
       - name: Laravel Mix
         run: npm run prod
 
-      - name: Upload assets
-        uses: actions/upload-artifact@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
         with:
-          name: assets
-          path: |
-            public
-            !public/index.php
-            !public/.htaccess
-            !public/robots.txt
-            !public/web.config
-            !public/mix-manifest.json
-          retention-days: 1
-
-      - name: Upload mix-manifest.json
-        uses: actions/upload-artifact@v2
-        with:
-          name: mix-manifest
-          path: public/mix-manifest.json
-          retention-days: 1
-
-  deploy-serverless:
-    name: Deploy Serverless stack
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs: [ build-project-code, build-assets ]
-    steps:
-      - name: Download project code
-        uses: actions/download-artifact@v2
-        with:
-          name: project-code
-
-      - name: Prep for use
-        run: |
-          tar xf project-code.tar
-          rm -f project-code.tar
-
-      - run: ls -alh
-
-      - name: Download mix-manifest.json
-        uses: actions/download-artifact@v2
-        with:
-          name: mix-manifest
-          path: public
+          role-to-assume: ${{ env.OIDC_ROLE }}
+          role-session-name: ${{ env.DEPLOYMENT_NAME }}-code-deployer
+          aws-region: ${{ env.DEPLOYMENT_REGION }}
 
       - name: Serverless Deploy
-        uses: serverless/github-action@master
+        uses: serverless/github-action@v2.18.0
         with:
-          args: deploy
+          args: deploy --aws-s3-accelerate
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           RELEASE_HASH: ${{ github.sha }}
-
-  deploy-assets:
-    name: Deploy assets
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs: [ deploy-serverless ]
-    steps:
-      - name: Download assets
-        uses: actions/download-artifact@v2
-        with:
-          name: assets
-
-      - uses: docker://schoenwaldnils/s3-sync-action:0.5.1
-        with:
-          args: --delete
-        env:
-          AWS_REGION: af-south-1
-          AWS_S3_BUCKET: skwash-prod-assets
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   migrate-db:
     name: Run database migrations
@@ -134,41 +109,22 @@ jobs:
     steps:
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.0'
-          extensions: curl, dom, bcmath, mbstring, zip
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
 
-      - name: Download project code
-        uses: actions/download-artifact@v2
+      - uses: ramsey/composer-install@v1
         with:
-          name: project-code
+          composer-options: "--prefer-dist --no-dev --optimize-autoloader --ignore-platform-reqs"
 
-      - name: Prep for use
-        run: |
-          tar xf project-code.tar
-          rm -f project-code.tar
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          role-to-assume: ${{ env.OIDC_ROLE }}
+          role-session-name: ${{ env.DEPLOYMENT_NAME }}-migrations-deployer
+          aws-region: ${{ env.DEPLOYMENT_REGION }}
 
       - name: Run database migration
       # function name is {service}-{stage}-artisan
         run: vendor/bin/bref cli skwash-production-artisan -- migrate --force --ansi --no-interaction
         env:
           AWS_DEFAULT_REGION: af-south-1
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
