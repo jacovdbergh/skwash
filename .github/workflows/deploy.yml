@@ -125,6 +125,6 @@ jobs:
 
       - name: Run database migration
       # function name is {service}-{stage}-artisan
-        run: vendor/bin/bref cli skwash-production-artisan -- migrate --force --ansi --no-interaction
+        run: vendor/bin/bref cli ${{ env.DEPLOYMENT_NAME }}-production-artisan -- migrate --force --ansi --no-interaction
         env:
-          AWS_DEFAULT_REGION: af-south-1
+          AWS_DEFAULT_REGION: ${{ env.DEPLOYMENT_REGION }}
