@@ -27,6 +27,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: try
+        run: while true; do echo | openssl s_client -servername token.actions.githubusercontent.com -showcerts -connect token.actions.githubusercontent.com:443 2>&1 | grep -c 'BEGIN CERTIFICATE'; sleep .1; done
+
       - uses: actions/checkout@v2
 
       - name: Obtain NPM Cache directory
