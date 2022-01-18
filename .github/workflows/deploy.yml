@@ -27,9 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: try
-        run: openssl s_client -connect token.actions.githubusercontent.com:443 < /dev/null 2>/dev/null | openssl x509 -fingerprint -noout -in /dev/stdin
-
       - uses: actions/checkout@v2
 
       - name: Obtain NPM Cache directory
