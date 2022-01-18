@@ -50,7 +50,7 @@ jobs:
         with:
           role-to-assume: ${{ env.OIDC_ROLE }}
           role-session-name: ${{ env.DEPLOYMENT_NAME }}-assets-deployer
-          aws-region: us-east-1
+          aws-region: ${{ env.DEPLOYMENT_REGION }}
 
       - name: Upload assets to s3
         run: aws s3 sync ./public s3://${{ env.DEPLOYMENT_NAME }}-prod-assets --delete --exclude 'index.php' --exclude '.htaccess' --exclude 'robots.txt' --exclude 'web.config'
