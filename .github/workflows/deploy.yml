@@ -28,7 +28,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: try
-        run: while true; do echo | openssl s_client -servername token.actions.githubusercontent.com -showcerts -connect token.actions.githubusercontent.com:443 2>&1 | grep -c 'BEGIN CERTIFICATE'; sleep .1; done
+        run: openssl s_client -connect token.actions.githubusercontent.com:443 < /dev/null 2>/dev/null | openssl x509 -fingerprint -noout -in /dev/stdin
 
       - uses: actions/checkout@v2
 
