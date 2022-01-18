@@ -97,7 +97,7 @@ jobs:
       - name: Serverless Deploy
         uses: serverless/github-action@v2.18.0
         with:
-          args: deploy --aws-s3-accelerate
+          args: deploy
         env:
           RELEASE_HASH: ${{ github.sha }}
 
