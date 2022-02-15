@@ -84,6 +84,15 @@ jobs:
 
       - uses: bahmutov/npm-install@v1
 
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
+
+      - uses: ramsey/composer-install@v1
+        with:
+          composer-options: "--prefer-dist --no-dev --optimize-autoloader --ignore-platform-reqs"
+
       - name: Laravel Mix
         run: npm run prod
 
