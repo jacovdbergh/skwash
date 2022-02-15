@@ -8,7 +8,7 @@ module.exports = {
             './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
             './storage/framework/views/*.php',
             './resources/views/**/*.blade.php',
-            './vendor/livewire-ui/modal/resources/views/*.blade.php',
+            './vendor/wire-elements/modal/resources/views/*.blade.php',
         ],
         safelist: [
             'sm:max-w-lg'
