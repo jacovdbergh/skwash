@@ -25,7 +25,7 @@ jobs:
   deploy-assets:
     name: Deploy assets
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v2
 
@@ -58,7 +58,7 @@ jobs:
   deploy-serverless:
     name: Deploy Serverless stack
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v2
 
@@ -104,7 +104,7 @@ jobs:
   migrate-db:
     name: Run database migrations
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     needs: [ deploy-serverless ]
     steps:
       - uses: actions/checkout@v2
