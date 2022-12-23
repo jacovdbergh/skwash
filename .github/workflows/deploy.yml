@@ -111,6 +111,12 @@ jobs:
         with:
           composer-options: "--prefer-dist --no-dev --optimize-autoloader --ignore-platform-reqs"
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+      - run: npm ci
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
