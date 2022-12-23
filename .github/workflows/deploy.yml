@@ -125,6 +125,6 @@ jobs:
           aws-region: ${{ env.DEPLOYMENT_REGION }}
 
       - name: Run database migration
-        run: ./node_modules/.bin/sls bref:cli "migrate --force --ansi --no-interaction"
+        run: ./node_modules/.bin/sls bref:cli -a "migrate --force --ansi --no-interaction"
         env:
           RELEASE_HASH: ${{ github.sha }}
