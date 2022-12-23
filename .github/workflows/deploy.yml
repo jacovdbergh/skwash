@@ -48,7 +48,7 @@ jobs:
         run: npm run prod
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@master
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: ${{ env.OIDC_ROLE }}
           role-session-name: ${{ env.DEPLOYMENT_NAME }}-assets-deployer
@@ -126,3 +126,5 @@ jobs:
 
       - name: Run database migration
         run: ./node_modules/.bin/sls bref:cli "migrate --force --ansi --no-interaction"
+        env:
+          RELEASE_HASH: ${{ github.sha }}
