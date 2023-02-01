@@ -22,7 +22,7 @@ provider:
         DB_DATABASE: ${ssm:/skwash/db-database}
         DB_USERNAME: ${ssm:/trials/db-username}
         DB_PASSWORD: ${ssm:/trials/db-password}
-        RELEASE_HASH: ${env:RELEASE_HASH}
+        # RELEASE_HASH: ${env:RELEASE_HASH}
         ASSET_URL: !Join [ '', [ 'https://', !GetAtt AssetsBucket.RegionalDomainName ] ]
         MIX_ASSET_URL: !Join [ '', [ 'https://', !GetAtt AssetsBucket.RegionalDomainName ] ]
         MAIL_MAILER: ses
